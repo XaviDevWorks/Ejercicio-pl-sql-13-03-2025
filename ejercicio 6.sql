@@ -53,3 +53,29 @@ localización.
 En el caso que no exista ningún servidor en la localización designada, hay que escribir en el fichero el
 texto: ‘Localización noválida!’ 
 */
+
+DELIMITER $$
+
+CREATE PROCEDURE lsCloudLocation (
+    IN p_localizacion VARCHAR(50),
+    OUT p_total_servidores INT
+)
+BEGIN
+    SELECT COUNT(*) INTO p_total_servidores 
+    FROM servidor 
+    WHERE localizacion = p_localizacion;
+
+    IF p_total_servidores > 0 THEN
+        SELECT s.servername, u.nick 
+        INTO OUTFILE CONCAT('/var/lib/mysql-files/location_', p_localizacion, '_', CURDATE(), '.txt')
+        FIELDS TERMINATED BY ' | '
+        LINES TERMINATED BY '\n'
+        FROM servidor s
+        JOIN usuario u ON s.id_usuario = u.id_usuario
+        WHERE s.localizacion = p_localizacion;
+    END IF;
+END $$
+
+DELIMITER ;
+
+/*Como usarlo*/
