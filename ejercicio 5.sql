@@ -64,7 +64,7 @@ CREATE PROCEDURE FormatearDatosPersona (
 BEGIN
     UPDATE persona
     SET nombre = CONCAT(UPPER(LEFT(nombre, 1)), LOWER(SUBSTRING(nombre, 2))),
-        apellido = CONCAT(UPPER(LEFT(apellido1, 1)), LOWER(SUBSTRING(apellido1, 2))),
+        apellido1 = CONCAT(UPPER(LEFT(apellido1, 1)), LOWER(SUBSTRING(apellido1, 2))),
         apellido2 = CONCAT(UPPER(LEFT(apellido2, 1)), LOWER(SUBSTRING(apellido2, 2))),
         correo = LOWER(correo),
         dni = CONCAT(
