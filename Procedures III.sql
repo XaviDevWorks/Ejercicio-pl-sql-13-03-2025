@@ -45,6 +45,52 @@ Creeu una taula nova que es digui orders_bck i que tingui la mateixa estructura 
 
 Feu un procediment que usi un cursor per recòrrer tota la taula orders i que insereixi les files dins de la taula orders_bck afegint la data actual a l'última columna.
 */
+-- Crear la taula de backup orders_bck
+CREATE TABLE orders_bck AS
+SELECT *, NOW() AS bck_date FROM orders WHERE 1=0;
 
-CREATE PROCEDURE backUpOrders() ...
+-- Procediment
+DELIMITER //
+CREATE PROCEDURE backUpOrders()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE vOrderID INT;
+    DECLARE vCustomerID VARCHAR(10);
+    DECLARE vEmployeeID INT;
+    DECLARE vOrderDate DATE;
+    DECLARE vRequiredDate DATE;
+    DECLARE vShippedDate DATE;
+    DECLARE vShipVia INT;
+    DECLARE vFreight DECIMAL(10,2);
+    DECLARE vShipName VARCHAR(50);
+    DECLARE vShipAddress VARCHAR(100);
+    DECLARE vShipCity VARCHAR(50);
+    DECLARE vShipRegion VARCHAR(50);
+    DECLARE vShipPostalCode VARCHAR(20);
+    DECLARE vShipCountry VARCHAR(50);
+    
+    -- Cursor per recórrer la taula orders
+    DECLARE cur CURSOR FOR 
+    SELECT OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry 
+    FROM orders;
+    
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO vOrderID, vCustomerID, vEmployeeID, vOrderDate, vRequiredDate, vShippedDate, vShipVia, vFreight, vShipName, vShipAddress, vShipCity, vShipRegion, vShipPostalCode, vShipCountry;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Inserir a la taula de backup amb la data actual
+        INSERT INTO orders_bck 
+        (OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, bck_date) 
+        VALUES 
+        (vOrderID, vCustomerID, vEmployeeID, vOrderDate, vRequiredDate, vShippedDate, vShipVia, vFreight, vShipName, vShipAddress, vShipCity, vShipRegion, vShipPostalCode, vShipCountry, NOW());
+    END LOOP;
+
+    CLOSE cur;
+END //
+DELIMITER ;
