@@ -60,16 +60,41 @@ CREATE PROCEDURE lsCloudLocation (
     OUT p_total_servidores INT
 )
 BEGIN
+    DECLARE v_filename VARCHAR(100);
+    DECLARE v_content VARCHAR(255);
+    DECLARE v_servername VARCHAR(50);
+    DECLARE v_nick VARCHAR(20);
+    DECLARE done INT DEFAULT 0;
+    DECLARE cur CURSOR FOR 
+        SELECT s.servername, u.nick 
+        FROM servidor s
+        JOIN usuario u ON s.id_usuario = u.id_usuario
+        WHERE s.localizacion = p_localizacion;
+    
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
     SELECT COUNT(*) INTO p_total_servidores 
     FROM servidor 
     WHERE localizacion = p_localizacion;
 
-    IF p_total_servidores > 0 THEN
-        SELECT s.servername, u.nick 
+    SET v_filename = CONCAT('location_', p_localizacion, '_', DATE_FORMAT(NOW(), '%Y-%m-%d'), '.txt');
 
-        FROM servidor s
-        JOIN usuario u ON s.id_usuario = u.id_usuario
-        WHERE s.localizacion = p_localizacion;
+    IF p_total_servidores > 0 THEN
+        OPEN cur;
+        read_loop: LOOP
+            FETCH cur INTO v_servername, v_nick;
+            IF done THEN
+                LEAVE read_loop;
+            END IF;
+            SET v_content = CONCAT(v_servername, ' ', v_nick);
+            SELECT v_content INTO OUTFILE v_filename
+            FIELDS TERMINATED BY '\n';
+        END LOOP;
+        CLOSE cur;
+    ELSE
+        SET v_content = 'Localización noválida!';
+        SELECT v_content INTO OUTFILE v_filename
+        FIELDS TERMINATED BY '\n';
     END IF;
 END $$
 
