@@ -77,3 +77,4 @@ END $$
 DELIMITER ;
 
 /*Como usarlo*/
+CALL FormatearDatosPersona(1);
