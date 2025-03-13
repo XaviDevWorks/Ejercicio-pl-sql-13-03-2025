@@ -10,8 +10,8 @@ CREATE TABLE persona (
     nombre VARCHAR(50) NOT NULL,
     apellido1 VARCHAR(50) NOT NULL,
     apellido2 VARCHAR(50),
-    correo VARCHAR(100) NOT NULL UNIQUE,
-    dni VARCHAR(9) NOT NULL UNIQUE
+    correo VARCHAR(100) NOT NULL,
+    dni VARCHAR(9) NOT NULL
 );
 
 INSERT INTO persona (nombre, apellido1, apellido2, correo, dni) VALUES
