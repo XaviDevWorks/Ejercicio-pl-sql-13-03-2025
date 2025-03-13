@@ -79,3 +79,5 @@ END $$
 DELIMITER ;
 
 /*Como usarlo*/
+CALL lsCloudLocation('Irlanda', @num_servidores);
+SELECT @num_servidores;
