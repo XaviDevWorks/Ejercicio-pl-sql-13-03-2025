@@ -67,9 +67,7 @@ BEGIN
 
     IF p_total_servidores > 0 THEN
         SELECT s.servername, u.nick 
-        INTO OUTFILE CONCAT('/var/lib/mysql-files/location_', p_localizacion, '_', CURDATE(), '.txt')
-        FIELDS TERMINATED BY ' | '
-        LINES TERMINATED BY '\n'
+
         FROM servidor s
         JOIN usuario u ON s.id_usuario = u.id_usuario
         WHERE s.localizacion = p_localizacion;
@@ -77,7 +75,3 @@ BEGIN
 END $$
 
 DELIMITER ;
-
-/*Como usarlo*/
-CALL lsCloudLocation('Irlanda', @num_servidores);
-SELECT @num_servidores;
