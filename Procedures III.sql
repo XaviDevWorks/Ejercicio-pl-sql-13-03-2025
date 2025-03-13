@@ -24,15 +24,12 @@ CREATE PROCEDURE checkCustomerID(
 )
 BEGIN
     DECLARE vExists INT;
-    
-    -- Comprovar si el CustomerID existeix
+
     SELECT COUNT(*) INTO vExists FROM customers WHERE CustomerID = vCustomerID;
 
     IF vExists > 0 THEN
-        -- Si existeix, retornar el ContactName
         SELECT ContactName INTO vContactName FROM customers WHERE CustomerID = vCustomerID;
     ELSE
-        -- Si no existeix, retornar un missatge d'error
         SET vContactName = 'ERROR: CustomerID no existeix';
     END IF;
 END //
@@ -69,7 +66,6 @@ BEGIN
     DECLARE vShipPostalCode VARCHAR(20);
     DECLARE vShipCountry VARCHAR(50);
     
-    -- Cursor per recórrer la taula orders
     DECLARE cur CURSOR FOR 
     SELECT OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry 
     FROM orders;
@@ -83,8 +79,7 @@ BEGIN
         IF done THEN
             LEAVE read_loop;
         END IF;
-
-        -- Inserir a la taula de backup amb la data actual
+        
         INSERT INTO orders_bck 
         (OrderID, CustomerID, EmployeeID, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry, bck_date) 
         VALUES 
