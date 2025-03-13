@@ -43,7 +43,7 @@ END $$
 
 DELIMITER ;
 
---Como usarlo
+/*Como usarlo*/
 CALL ObtenercorreoPorDNI('12345678A', @correo);
 SELECT @correo;
 
@@ -75,3 +75,5 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+/*Como usarlo*/
