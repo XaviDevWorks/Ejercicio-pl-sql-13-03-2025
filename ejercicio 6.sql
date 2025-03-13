@@ -53,7 +53,6 @@ localización.
 En el caso que no exista ningún servidor en la localización designada, hay que escribir en el fichero el
 texto: ‘Localización noválida!’ 
 */
-
 DELIMITER $$
 
 CREATE PROCEDURE lsCloudLocation (
